@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="uk" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech&Style — Інтернет-магазин техніки та декорацій</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        headerBg: '#dbeafe',
+                        sidebarBg: '#fef9c3',
+                        mainBg: '#eef2ff',
+                        footerBg: '#1e3a8a',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .product-card { transition: all 0.25s ease; }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -6px rgba(30, 58, 138, 0.15); }
+    </style>
+</head>
+<body class="h-full font-sans bg-mainBg flex flex-col antialiased text-gray-800 overflow-x-hidden">
+
+    <!-- ХЕДЕР -->
+    <header class="bg-headerBg border-b border-blue-200 h-16 px-4 md:px-8 flex items-center justify-between shrink-0 shadow-sm sticky top-0 z-40">
+        <!-- Логотип (направляє на index.html) -->
+        <a href="index.html" class="flex items-center space-x-3 cursor-pointer group">
+            <div class="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-bolt text-lg"></i>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xl font-extrabold tracking-tight text-blue-950">Tech<span class="text-indigo-600">&</span>Style</span>
+                <span class="text-[9px] text-blue-700 font-bold uppercase tracking-wider -mt-1">Техніка & Декор</span>
+            </div>
+        </a>
+
+        <!-- Пошук -->
+        <div class="flex-1 max-w-md mx-4 relative">
+            <input type="text" id="searchInput" placeholder="Пошук товарів..." class="w-full pl-10 pr-4 py-2 bg-white/90 border border-blue-200 rounded-full text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-inner">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-blue-400 text-xs"></i>
+        </div>
+
+        <!-- Права частина: Баланс, Кошик, Профіль, Перемикач мови -->
+        <div class="flex items-center space-x-2 md:space-x-3">
+            <button onclick="toggleProfileModal()" class="flex items-center space-x-2 bg-white/90 hover:bg-white px-3 py-1.5 rounded-full border border-blue-200 cursor-pointer shadow-sm">
+                <i class="fa-solid fa-wallet text-amber-500 text-xs"></i>
+                <span class="text-xs font-extrabold text-gray-800"><span id="userBalance">2 500</span> ₴</span>
+            </button>
+
+            <button onclick="toggleCartModal()" class="relative p-2.5 rounded-full bg-white/90 border border-blue-200 text-blue-900 hover:bg-white shadow-sm transition">
+                <i class="fa-solid fa-cart-shopping text-sm"></i>
+                <span id="cartBadge" class="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow">2</span>
+            </button>
+
+            <!-- Профіль -->
+            <button onclick="toggleProfileModal()" class="p-1 rounded-full bg-white/90 border border-blue-200 hover:bg-white shadow-sm transition">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" class="w-8 h-8 rounded-full object-cover">
+            </button>
+
+            <!-- ПЕРЕМИКАЧ МОВИ СТРАВА ВІД ПРОФІЛЮ -->
+            <button onclick="toggleLanguage()" id="langBtn" class="px-2.5 py-1 bg-white/90 border border-blue-200 rounded-full text-xs font-black text-indigo-900 hover:bg-white shadow-sm transition">
+                UA / EN
+            </button>
+        </div>
+    </header>
+
+    <!-- ОСНОВНА ЧАСТИНА -->
+    <div class="flex-1 flex overflow-hidden">
+        
+        <!-- БОКОВА ПАНЕЛЬ -->
+        <aside class="w-16 md:w-56 bg-sidebarBg border-r border-yellow-200 flex flex-col p-3 shrink-0 shadow-inner overflow-y-auto">
+            <div class="text-[10px] uppercase tracking-wider text-yellow-900 font-extrabold mb-3 hidden md:block px-2 opacity-75">Меню</div>
+            <nav class="space-y-2">
+                <a href="index.html" class="flex items-center space-x-3 p-2.5 w-full rounded-2xl bg-amber-300 text-yellow-950 font-bold shadow-sm">
+                    <i class="fa-solid fa-house text-sm w-5 text-center"></i>
+                    <span class="text-xs hidden md:inline">Головна</span>
+                </a>
+                <!-- ПЕРЕНАПРАВЛЕННЯ НА CATALOG.HTML -->
+                <a href="catalog.html" class="flex items-center space-x-3 p-2.5 w-full rounded-2xl bg-yellow-100 text-yellow-900 font-semibold hover:bg-amber-200">
+                    <i class="fa-solid fa-boxes-stacked text-sm w-5 text-center"></i>
+                    <span class="text-xs hidden md:inline">Каталог</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 p-2.5 w-full rounded-2xl bg-yellow-100 text-yellow-900 font-semibold hover:bg-amber-200">
+                    <i class="fa-solid fa-clock-rotate-left text-sm w-5 text-center"></i>
+                    <span class="text-xs hidden md:inline">Прокат</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 p-2.5 w-full rounded-2xl bg-yellow-100 text-yellow-900 font-semibold hover:bg-amber-200">
+                    <i class="fa-solid fa-truck-fast text-sm w-5 text-center"></i>
+                    <span class="text-xs hidden md:inline">Доставка</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 p-2.5 w-full rounded-2xl bg-yellow-100 text-yellow-900 font-semibold hover:bg-amber-200">
+                    <i class="fa-solid fa-headset text-sm w-5 text-center"></i>
+                    <span class="text-xs hidden md:inline">Підтримка</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- ЦЕНТРАЛЬНА ЧАСТИНА -->
+        <main class="flex-1 bg-mainBg overflow-y-auto p-4 md:p-6 space-y-6">
+            
+            <!-- СЛАЙДЕР 1: ЗНИЖКИ -->
+            <section class="bg-white/80 rounded-3xl p-5 shadow-sm border border-indigo-100 space-y-3">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-base font-extrabold text-indigo-950 flex items-center gap-2">
+                        <i class="fa-solid fa-tags text-rose-500"></i> Товари зі знижками
+                    </h3>
+                    <div class="flex space-x-1">
+                        <button onclick="scrollSlider('discountSlider', -280)" class="w-8 h-8 rounded-xl bg-white border border-indigo-100 text-indigo-900 hover:bg-indigo-50 flex items-center justify-center shadow-sm"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button onclick="scrollSlider('discountSlider', 280)" class="w-8 h-8 rounded-xl bg-white border border-indigo-100 text-indigo-900 hover:bg-indigo-50 flex items-center justify-center shadow-sm"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    </div>
+                </div>
+                <div id="discountSlider" class="flex space-x-4 overflow-x-auto no-scrollbar scroll-smooth pb-2 pt-1"></div>
+            </section>
+
+            <!-- СЛАЙДЕР 2: НОВІ ТОВАРИ -->
+            <section class="bg-white/80 rounded-3xl p-5 shadow-sm border border-indigo-100 space-y-3">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-base font-extrabold text-indigo-950 flex items-center gap-2">
+                        <i class="fa-solid fa-sparkles text-amber-500"></i> Нові надходження
+                    </h3>
+                    <div class="flex space-x-1">
+                        <button onclick="scrollSlider('newSlider', -280)" class="w-8 h-8 rounded-xl bg-white border border-indigo-100 text-indigo-900 hover:bg-indigo-50 flex items-center justify-center shadow-sm"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button onclick="scrollSlider('newSlider', 280)" class="w-8 h-8 rounded-xl bg-white border border-indigo-100 text-indigo-900 hover:bg-indigo-50 flex items-center justify-center shadow-sm"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    </div>
+                </div>
+                <div id="newSlider" class="flex space-x-4 overflow-x-auto no-scrollbar scroll-smooth pb-2 pt-1"></div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ФУТЕР -->
+    <footer class="bg-footerBg text-blue-100 py-4 px-6 text-center md:text-left flex flex-col md:flex-row items-center justify-between text-xs gap-2">
+        <span class="font-extrabold text-white">Tech&Style © 2026</span>
+        <span class="text-blue-200">Інтернет-магазин сучасної техніки та декору.</span>
+    </footer>
+
+    <!-- МОДАЛЬНЕ ВІКНО КОШИКА -->
+    <div id="cartModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="bg-headerBg px-6 py-4 border-b border-blue-200 flex items-center justify-between">
+                <h3 class="font-extrabold text-blue-950 text-sm flex items-center gap-2"><i class="fa-solid fa-cart-shopping"></i> Кошик замовлень</h3>
+                <button onclick="toggleCartModal()" class="text-gray-500 hover:text-gray-800"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6 overflow-y-auto">
+                <div class="md:col-span-2 space-y-3" id="cartList"></div>
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col justify-between h-fit">
+                    <div>
+                        <h4 class="font-black text-gray-900 text-xs uppercase tracking-wide border-b pb-2 mb-3">Чек замовлення</h4>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex justify-between text-gray-600"><span>Сума:</span><span id="cartSubtotal" class="font-bold text-gray-900">0 ₴</span></div>
+                            <div class="flex justify-between text-gray-600"><span>Доставка:</span><span class="font-bold text-emerald-600">Безкоштовно</span></div>
+                            <hr class="my-2">
+                            <div class="flex justify-between text-sm font-black text-indigo-900"><span>До сплати:</span><span id="cartTotal">0 ₴</span></div>
+                        </div>
+                    </div>
+                    <button onclick="checkout()" class="w-full mt-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shadow transition">Оформити замовлення</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНЕ ВІКНО ПРОФІЛЮ -->
+    <div id="profileModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl w-full max-w-sm shadow-2xl p-6 relative">
+            <button onclick="toggleProfileModal()" class="absolute right-4 top-4 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
+            <div class="text-center mb-4">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" class="w-16 h-16 rounded-full mx-auto mb-2 object-cover ring-2 ring-indigo-200">
+                <h4 class="font-bold text-sm text-gray-900">Олександр Петренко</h4>
+                <p class="text-xs text-gray-500">Клієнт</p>
+            </div>
+            <button onclick="topUp()" class="w-full py-2.5 bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold rounded-xl text-xs transition">+ Поповнити на 1,000 ₴</button>
+        </div>
+    </div>
+
+    <script>
+        const products = [
+            { id: 1, title: "Розумна лампа RGB Luxe", price: 1999, oldPrice: 2499, rating: 4.8, reviews: 24, isDiscount: true, isNew: true, image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=500&q=80" },
+            { id: 2, title: "Бездротова колонка JBL Charge 5", price: 4930, oldPrice: 5799, rating: 4.9, reviews: 58, isDiscount: true, isNew: true, image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80" },
+            { id: 3, title: "Розумний годинник SmartFit", price: 3100, oldPrice: 4200, rating: 4.7, reviews: 19, isDiscount: true, isNew: true, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80" },
+            { id: 4, title: "Настільний LED світильник", price: 950, oldPrice: null, rating: 4.6, reviews: 12, isDiscount: false, isNew: true, image: "https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?auto=format&fit=crop&w=500&q=80" },
+            { id: 5, title: "Бездротова зарядка 3в1", price: 1500, oldPrice: null, rating: 4.5, reviews: 8, isDiscount: false, isNew: true, image: "https://images.unsplash.com/photo-1586816879360-004f5b0c51e3?auto=format&fit=crop&w=500&q=80" }
+        ];
+
+        let cart = [{ ...products[0], quantity: 1 }, { ...products[1], quantity: 1 }];
+        let balance = 2500;
+
+        window.onload = function() {
+            renderSliders();
+            updateCart();
+        };
+
+        function renderSliders() {
+            document.getElementById('discountSlider').innerHTML = products.filter(p => p.isDiscount).map(p => createCardHTML(p, true)).join('');
+            document.getElementById('newSlider').innerHTML = products.filter(p => p.isNew).map(p => createCardHTML(p, false)).join('');
+        }
+
+        function createCardHTML(p, isDiscount) {
+            return `
+                <div class="min-w-[220px] max-w-[220px] bg-white rounded-2xl p-3 border border-indigo-100 shadow-sm flex flex-col justify-between shrink-0 product-card">
+                    <div>
+                        <div class="relative h-32 rounded-xl overflow-hidden mb-2 bg-gray-100">
+                            <img src="${p.image}" class="w-full h-full object-cover">
+                            ${isDiscount ? `<span class="absolute top-2 left-2 bg-rose-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full">-20%</span>` : ''}
+                        </div>
+                        <h4 class="font-bold text-xs text-gray-900 truncate">${p.title}</h4>
+                        <!-- РЕЙТИНГ ТА ВІДГУКИ -->
+                        <div class="flex items-center space-x-1 my-1">
+                            <i class="fa-solid fa-star text-amber-400 text-[10px]"></i>
+                            <span class="text-[11px] font-bold text-gray-800">${p.rating}</span>
+                            <span class="text-[10px] text-gray-400">(${p.reviews})</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm font-black text-indigo-700">${p.price} ₴</span>
+                            ${p.oldPrice ? `<span class="text-xs text-gray-400 line-through">${p.oldPrice} ₴</span>` : ''}
+                        </div>
+                    </div>
+                    <button onclick="addToCart(${p.id})" class="mt-2 w-full py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-cart-plus"></i> Купити
+                    </button>
+                </div>
+            `;
+        }
+
+        function scrollSlider(id, offset) { document.getElementById(id).scrollBy({ left: offset, behavior: 'smooth' }); }
+        function addToCart(id) {
+            const p = products.find(x => x.id === id);
+            const exist = cart.find(x => x.id === id);
+            if (exist) exist.quantity++; else cart.push({ ...p, quantity: 1 });
+            updateCart();
+        }
+        function changeQty(id, delta) {
+            const item = cart.find(x => x.id === id);
+            if (item) { item.quantity += delta; if (item.quantity <= 0) cart = cart.filter(x => x.id !== id); updateCart(); }
+        }
+        function removeItem(id) { cart = cart.filter(x => x.id !== id); updateCart(); }
+        function updateCart() {
+            document.getElementById('cartBadge').innerText = cart.reduce((s, i) => s + i.quantity, 0);
+            document.getElementById('cartList').innerHTML = cart.map(i => `
+                <div class="bg-white border border-gray-200 rounded-xl p-3 flex items-center justify-between text-xs">
+                    <div class="flex items-center gap-2 w-2/5">
+                        <img src="${i.image}" class="w-10 h-10 rounded-lg object-cover">
+                        <span class="font-bold text-gray-800 truncate">${i.title}</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 bg-gray-50 border px-2 py-0.5 rounded-lg">
+                        <button onclick="changeQty(${i.id}, -1)" class="font-bold text-gray-600">-</button>
+                        <span class="font-bold">${i.quantity}</span>
+                        <button onclick="changeQty(${i.id}, 1)" class="font-bold text-gray-600">+</button>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="font-black text-indigo-900">${i.price * i.quantity} ₴</span>
+                        <button onclick="removeItem(${i.id})" class="text-rose-500"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                </div>
+            `).join('');
+            const total = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
+            document.getElementById('cartSubtotal').innerText = `${total} ₴`;
+            document.getElementById('cartTotal').innerText = `${total} ₴`;
+        }
+        function toggleCartModal() { document.getElementById('cartModal').classList.toggle('hidden'); }
+        function toggleProfileModal() { document.getElementById('profileModal').classList.toggle('hidden'); }
+        function toggleLanguage() { alert("Мову переключено!"); }
+        function topUp() { balance += 1000; document.getElementById('userBalance').innerText = balance.toLocaleString(); }
+        function checkout() { alert("Замовлення оформлено!"); cart = []; updateCart(); toggleCartModal(); }
+    </script>
+</body>
+</html>

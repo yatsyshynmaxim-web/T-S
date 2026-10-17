@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="uk" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог товарів — Tech&Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        headerBg: '#dbeafe',
+                        sidebarBg: '#fef9c3',
+                        mainBg: '#eef2ff',
+                        footerBg: '#1e3a8a',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .product-card { transition: all 0.25s ease; }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -6px rgba(30, 58, 138, 0.15); }
+    </style>
+</head>
+<body class="h-full font-sans bg-mainBg flex flex-col antialiased text-gray-800 overflow-x-hidden">
+
+    <!-- ФІЛЬТР "ЗА РЕЛЕВАНТНІСТЮ" НАД ХЕДЕРОМ -->
+    <div class="bg-indigo-900 text-indigo-100 text-xs py-1.5 px-4 md:px-8 flex justify-end items-center space-x-2 shrink-0 z-50">
+        <span class="font-bold">Сортування:</span>
+        <select id="topRelevanceSort" onchange="filterProducts()" class="bg-indigo-950 text-white border border-indigo-700 rounded-lg px-2 py-0.5 text-xs focus:outline-none">
+            <option value="new">Спочатку нові</option>
+            <option value="old">Спочатку старі</option>
+        </select>
+    </div>
+
+    <!-- ХЕДЕР -->
+    <header class="bg-headerBg border-b border-blue-200 h-16 px-4 md:px-8 flex items-center justify-between shrink-0 shadow-sm sticky top-0 z-40">
+        <a href="index.html" class="flex items-center space-x-3 cursor-pointer group">
+            <div class="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-bolt text-lg"></i>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xl font-extrabold tracking-tight text-blue-950">Tech<span class="text-indigo-600">&</span>Style</span>
+                <span class="text-[9px] text-blue-700 font-bold uppercase tracking-wider -mt-1">Техніка & Декор</span>
+            </div>
+        </a>
+
+        <div class="flex-1 max-w-md mx-4 relative">
+            <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Пошук у каталозі..." class="w-full pl-10 pr-4 py-2 bg-white/90 border border-blue-200 rounded-full text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-inner">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-blue-400 text-xs"></i>
+        </div>
+
+        <div class="flex items-center space-x-2 md:space-x-3">
+            <button onclick="toggleProfileModal()" class="flex items-center space-x-2 bg-white/90 hover:bg-white px-3 py-1.5 rounded-full border border-blue-200 cursor-pointer shadow-sm">
+                <i class="fa-solid fa-wallet text-amber-500 text-xs"></i>
+                <span class="text-xs font-extrabold text-gray-800"><span id="userBalance">2 500</span> ₴</span>
+            </button>
+
+            <button onclick="toggleCartModal()" class="relative p-2.5 rounded-full bg-white/90 border border-blue-200 text-blue-900 hover:bg-white shadow-sm transition">
+                <i class="fa-solid fa-cart-shopping text-sm"></i>
+                <span id="cartBadge" class="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow">2</span>
+            </button>
+
+            <button onclick="toggleProfileModal()" class="p-1 rounded-full bg-white/90 border border-blue-200 hover:bg-white shadow-sm transition">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" class="w-8 h-8 rounded-full object-cover">
+            </button>
+
+            <button onclick="toggleLanguage()" id="langBtn" class="px-2.5 py-1 bg-white/90 border border-blue-200 rounded-full text-xs font-black text-indigo-900 hover:bg-white shadow-sm transition">
+                UA / EN
+            </button>
+        </div>
+    </header>
+
+    <div class="flex-1 flex overflow-hidden">
+        
+        <!-- ЛІВА БОКОВА ПАНЕЛЬ -->
+        <aside class="w-72 bg-sidebarBg border-r border-yellow-200 p-4 shrink-0 overflow-y-auto flex flex-col justify-between">
+            <div class="space-y-4">
+                <div class="text-xs font-extrabold text-yellow-900 uppercase tracking-wider mb-2">Категорії (множинний вибір)</div>
+
+                <!-- Ігрова зона -->
+                <details open class="group">
+                    <summary class="cursor-pointer font-bold text-sm text-yellow-950 py-1 flex items-center justify-between hover:text-indigo-700">
+                        <span><i class="fa-solid fa-gamepad mr-2"></i> Ігрова зона</span>
+                        <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
+                    </summary>
+                    <div class="pl-6 pt-1 space-y-1.5 text-xs text-yellow-900 font-medium">
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="NINTENDO" onchange="filterProducts()" class="cat-checkbox accent-indigo-600"><span>NINTENDO</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="PS" onchange="filterProducts()" class="cat-checkbox accent-indigo-600"><span>PS</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="XBOX" onchange="filterProducts()" class="cat-checkbox accent-indigo-600"><span>XBOX</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="ПК геймінг" onchange="filterProducts()" class="cat-checkbox accent-indigo-600"><span>ПК геймінг</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="інше" onchange="filterProducts()" class="cat-checkbox accent-indigo-600"><span>інше</span></label>
+                    </div>
+                </details>
+
+                <!-- Техніка -->
+                <details open class="group">
+                    <summary class="cursor-pointer font-bold text-sm text-yellow-950 py-1 flex items-center justify-between hover:text-indigo-700">
+                        <span><i class="fa-solid fa-laptop mr-2"></i> Техніка</span>
+                        <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
+                    </summary>
+                    <div class="pl-6 pt-1 space-y-1.5 text-xs text-yellow-900 font-medium">
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Телефони" onchange="filterProducts()" class="cat-checkbox accent-indigo-600"><span>Телефони</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Ноути" onchange="filterProducts()" class="cat-checkbox accent-indigo-600"><span>Ноути</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="ПК" onchange="filterProducts()" class="cat-checkbox accent-indigo-600"><span>ПК</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Планшети" onchange="filterProducts()" class="cat-checkbox accent-indigo-600"><span>Планшети</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Фени" onchange="filterProducts()" class="cat-checkbox accent-indigo-600"><span>Фени</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Стиралки" onchange="filterProducts()" class="cat-checkbox accent-indigo-600"><span>Стиралки</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Лампи" onchange="filterProducts()" class="cat-checkbox accent-indigo-600"><span>Лампи</span></label>
+                    </div>
+                </details>
+
+                <!-- Декор & меблі -->
+                <details open class="group">
+                    <summary class="cursor-pointer font-bold text-sm text-yellow-950 py-1 flex items-center justify-between hover:text-indigo-700">
+                        <span><i class="fa-solid fa-couch mr-2"></i> Декор & меблі</span>
+                        <i class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
+                    </summary>
+                    <div class="pl-6 pt-1 space-y-1.5 text-xs text-yellow-900 font-medium">
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Рослини" onchange="filterProducts()" class="cat-checkbox accent-indigo-600"><span>Рослини</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Столи" onchange="filterProducts()" class="cat-checkbox accent-indigo-600"><span>Столи</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Стільці" onchange="filterProducts()" class="cat-checkbox accent-indigo-600"><span>Стільці</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" value="Крісла" onchange="filterProducts()" class="cat-checkbox accent-indigo-600"><span>Крісла</span></label>
+                    </div>
+                </details>
+            </div>
+
+            <!-- ПОВЗУНОК ЦІНИ УНИЗУ -->
+            <div class="mt-6 pt-4 border-t border-yellow-300 space-y-2">
+                <div class="flex justify-between text-xs font-bold text-yellow-950">
+                    <span>Ціна до:</span>
+                    <span id="priceVal" class="text-indigo-700 font-black">70000 ₴</span>
+                </div>
+                <input type="range" id="priceRange" min="500" max="70000" step="500" value="70000" oninput="filterProducts()" class="w-full accent-indigo-600 cursor-pointer">
+                <div class="flex justify-between text-[10px] text-yellow-800">
+                    <span>500 ₴</span>
+                    <span>70 000 ₴</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ЦЕНТР -->
+        <main class="flex-1 bg-mainBg p-6 overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h2 id="catalogTitle" class="text-lg font-black text-indigo-950">Каталог товарів</h2>
+                <button onclick="resetFilter()" class="text-xs font-bold text-indigo-600 hover:underline">Скинути всі фільтри</button>
+            </div>
+            
+            <div id="catalogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+        </main>
+    </div>
+
+    <footer class="bg-footerBg text-blue-100 py-4 px-6 text-center md:text-left flex flex-col md:flex-row items-center justify-between text-xs gap-2">
+        <span class="font-extrabold text-white">Tech&Style © 2026</span>
+        <span class="text-blue-200">Інтернет-магазин сучасної техніки та декору.</span>
+    </footer>
+
+    <div id="cartModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="bg-headerBg px-6 py-4 border-b border-blue-200 flex items-center justify-between">
+                <h3 class="font-extrabold text-blue-950 text-sm flex items-center gap-2"><i class="fa-solid fa-cart-shopping"></i> Кошик замовлень</h3>
+                <button onclick="toggleCartModal()" class="text-gray-500 hover:text-gray-800"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6 overflow-y-auto">
+                <div class="md:col-span-2 space-y-3" id="cartList"></div>
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col justify-between h-fit">
+                    <div>
+                        <h4 class="font-black text-gray-900 text-xs uppercase tracking-wide border-b pb-2 mb-3">Чек замовлення</h4>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex justify-between text-gray-600"><span>Сума:</span><span id="cartSubtotal" class="font-bold text-gray-900">0 ₴</span></div>
+                            <div class="flex justify-between text-gray-600"><span>Доставка:</span><span class="font-bold text-emerald-600">Безкоштовно</span></div>
+                            <hr class="my-2">
+                            <div class="flex justify-between text-sm font-black text-indigo-900"><span>До сплати:</span><span id="cartTotal">0 ₴</span></div>
+                        </div>
+                    </div>
+                    <button onclick="checkout()" class="w-full mt-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shadow transition">Оформити замовлення</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="profileModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl w-full max-w-sm shadow-2xl p-6 relative">
+            <button onclick="toggleProfileModal()" class="absolute right-4 top-4 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
+            <div class="text-center mb-4">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" class="w-16 h-16 rounded-full mx-auto mb-2 object-cover ring-2 ring-indigo-200">
+                <h4 class="font-bold text-sm text-gray-900">Олександр Петренко</h4>
+                <p class="text-xs text-gray-500">Клієнт</p>
+            </div>
+            <button onclick="topUp()" class="w-full py-2.5 bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold rounded-xl text-xs transition">+ Поповнити на 1,000 ₴</button>
+        </div>
+    </div>
+
+    <script>
+        // Розширена база товарів у каталозі
+        const catalogProducts = [
+            { id: 101, title: "Консоль Nintendo Switch OLED", category: "NINTENDO", price: 13500, rating: 4.9, reviews: 32, date: 15, image: "https://images.unsplash.com/photo-1578303512597-81e6cc155b3e?auto=format&fit=crop&w=500&q=80" },
+            { id: 102, title: "Sony PlayStation 5 Digital", category: "PS", price: 21900, rating: 5.0, reviews: 84, date: 14, image: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=500&q=80" },
+            { id: 103, title: "Геймпад Xbox Wireless Controller", category: "XBOX", price: 2600, rating: 4.8, reviews: 45, date: 13, image: "https://images.unsplash.com/photo-1600080972464-8e5f35f63d08?auto=format&fit=crop&w=500&q=80" },
+            { id: 104, title: "Смартфон iPhone 15 Pro", category: "Телефони", price: 42000, rating: 4.9, reviews: 110, date: 12, image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=500&q=80" },
+            { id: 105, title: "Ноутбук ASUS ROG Strix", category: "Ноути", price: 54000, rating: 4.7, reviews: 19, date: 11, image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=500&q=80" },
+            { id: 106, title: "Геймерське крісло DXRacer", category: "Крісла", price: 11500, rating: 4.6, reviews: 15, date: 10, image: "https://images.unsplash.com/photo-1580481072645-022f9a6d8310?auto=format&fit=crop&w=500&q=80" },
+            { id: 107, title: "Планшет Apple iPad Air", category: "Планшети", price: 28000, rating: 4.9, reviews: 41, date: 9, image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=500&q=80" },
+            { id: 108, title: "Фен Dyson Supersonic", category: "Фени", price: 17500, rating: 5.0, reviews: 92, date: 8, image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=500&q=80" },
+            { id: 109, title: "Настільна Розумна Лампа", category: "Лампи", price: 1800, rating: 4.5, reviews: 21, date: 7, image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=500&q=80" },
+            { id: 110, title: "Офісний стіл Loft", category: "Столи", price: 6500, rating: 4.7, reviews: 14, date: 6, image: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=500&q=80" },
+            { id: 111, title: "Ігровий ПК CyberPower", category: "ПК", price: 45000, rating: 4.8, reviews: 27, date: 5, image: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=500&q=80" },
+            { id: 112, title: "Пральна машина LG TurboWash", category: "Стиралки", price: 23000, rating: 4.7, reviews: 38, date: 4, image: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=500&q=80" },
+            { id: 113, title: "Монстера у горщику (Рослина)", category: "Рослини", price: 950, rating: 4.9, reviews: 50, date: 3, image: "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&w=500&q=80" },
+            { id: 114, title: "Дерев'яний стілець Minimal", category: "Стільці", price: 2100, rating: 4.4, reviews: 11, date: 2, image: "https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=500&q=80" },
+            { id: 115, title: "Віртуальна реальність Meta Quest 3", category: "інше", price: 24500, rating: 4.9, reviews: 67, date: 1, image: "https://images.unsplash.com/photo-1593508512255-86ab42a8e620?auto=format&fit=crop&w=500&q=80" }
+        ];
+
+        let cart = [];
+        let balance = 2500;
+
+        window.onload = function() {
+            filterProducts();
+        };
+
+        function renderCatalogGrid(items) {
+            const grid = document.getElementById('catalogGrid');
+            if (items.length === 0) {
+                grid.innerHTML = `<p class="col-span-full text-center py-8 text-xs text-gray-500 font-bold">За обраними критеріями товарів не знайдено.</p>`;
+                return;
+            }
+            grid.innerHTML = items.map(p => `
+                <div class="bg-white rounded-2xl p-3 border border-indigo-100 shadow-sm flex flex-col justify-between product-card">
+                    <div>
+                        <div class="h-36 rounded-xl overflow-hidden mb-2 bg-gray-100">
+                            <img src="${p.image}" class="w-full h-full object-cover">
+                        </div>
+                        <h4 class="font-bold text-xs text-gray-900 truncate">${p.title}</h4>
+                        <div class="flex items-center space-x-1 my-1">
+                            <i class="fa-solid fa-star text-amber-400 text-[10px]"></i>
+                            <span class="text-[11px] font-bold text-gray-800">${p.rating}</span>
+                            <span class="text-[10px] text-gray-400">(${p.reviews})</span>
+                        </div>
+                        <span class="text-xs font-black text-indigo-700 block">${p.price.toLocaleString()} ₴</span>
+                    </div>
+                    <button onclick="addToCart(${p.id})" class="mt-2 w-full py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-cart-plus"></i> Додати
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function resetFilter() {
+            document.querySelectorAll('.cat-checkbox').forEach(cb => cb.checked = false);
+            document.getElementById('searchInput').value = '';
+            const range = document.getElementById('priceRange');
+            range.value = range.max;
+            document.getElementById('priceVal').innerText = range.max + ' ₴';
+            document.getElementById('topRelevanceSort').value = 'new';
+            filterProducts();
+        }
+
+        function filterProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const maxPrice = Number(document.getElementById('priceRange').value);
+            document.getElementById('priceVal').innerText = maxPrice.toLocaleString() + ' ₴';
+
+            const selectedCategories = Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(cb => cb.value);
+            const sortOrder = document.getElementById('topRelevanceSort').value;
+
+            let result = catalogProducts.filter(p => {
+                const matchCat = selectedCategories.length === 0 || selectedCategories.includes(p.category);
+                const matchPrice = p.price <= maxPrice;
+                const matchSearch = p.title.toLowerCase().includes(query);
+                return matchCat && matchPrice && matchSearch;
+            });
+
+            if (sortOrder === 'new') {
+                result.sort((a,b) => b.date - a.date);
+            } else {
+                result.sort((a,b) => a.date - b.date);
+            }
+
+            renderCatalogGrid(result);
+        }
+
+        function addToCart(id) {
+            const p = catalogProducts.find(x => x.id === id);
+            const exist = cart.find(x => x.id === id);
+            if (exist) exist.quantity++; else cart.push({ ...p, quantity: 1 });
+            updateCart();
+        }
+
+        function updateCart() {
+            document.getElementById('cartBadge').innerText = cart.reduce((s, i) => s + i.quantity, 0);
+            document.getElementById('cartList').innerHTML = cart.map(i => `
+                <div class="bg-white border border-gray-200 rounded-xl p-3 flex items-center justify-between text-xs">
+                    <div class="flex items-center gap-2 w-2/5">
+                        <img src="${i.image}" class="w-10 h-10 rounded-lg object-cover">
+                        <span class="font-bold text-gray-800 truncate">${i.title}</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="font-black text-indigo-900">${i.price * i.quantity} ₴</span>
+                    </div>
+                </div>
+            `).join('');
+            const total = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
+            document.getElementById('cartSubtotal').innerText = `${total} ₴`;
+            document.getElementById('cartTotal').innerText = `${total} ₴`;
+        }
+
+        function toggleCartModal() { document.getElementById('cartModal').classList.toggle('hidden'); }
+        function toggleProfileModal() { document.getElementById('profileModal').classList.toggle('hidden'); }
+        function toggleLanguage() { alert("Мову переключено!"); }
+        function topUp() { balance += 1000; document.getElementById('userBalance').innerText = balance.toLocaleString(); }
+        function checkout() { alert("Замовлення оформлено!"); cart = []; updateCart(); toggleCartModal(); }
+    </script>
+</body>
+</html>
